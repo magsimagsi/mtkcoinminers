@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTK Coin Miner - Connect & Claim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .game-section {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .wallet-section {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #f8c555;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            color: #f8c555;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .game-container {
+            position: relative;
+            background: #1a1a2e;
+            border: 3px solid #f8c555;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #gameCanvas {
+            display: block;
+            background: #16213e;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            background: linear-gradient(45deg, #f8c555, #ff9a00);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 16px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(248, 197, 85, 0.4);
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .wallet-info {
+            background: rgba(248, 197, 85, 0.1);
+            border: 2px solid #f8c555;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .label {
+            color: #f8c555;
+            font-weight: bold;
+        }
+
+        .value {
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+
+        .token-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #f8c555;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        input::placeholder {
+            color: #aaa;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: rgba(248, 197, 85, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f8c555;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #f8c555;
+            color: #000;
+            border-radius: 8px;
+            font-weight: bold;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .mine-spot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #f8c555;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .connection-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .metamask-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+        }
+
+        .connection-instructions {
+            background: rgba(248, 197, 85, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 500px;
+        }
+
+        .instruction-step {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .step-number {
+            background: #f8c555;
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .step-text {
+            text-align: left;
+        }
+
+        .big-connect-btn {
+            padding: 20px 40px;
+            font-size: 20px;
+            margin: 20px 0;
+            background: linear-gradient(45deg, #f8c555, #ff9a00);
+            border: none;
+            border-radius: 15px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .big-connect-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(248, 197, 85, 0.4);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="connectionScreen" class="connection-screen">
+        <h1>🎮 Welcome to MTK Coin Miner 🪙</h1>
+        <div class="connection-instructions">
+            <h2>📱 Connect Your Wallet to Start</h2>
+            <div class="instruction-step">
+                <div class="step-number">1</div>
+                <div class="step-text">Install MetaMask extension in your browser</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">2</div>
+                <div class="step-text">Make sure you're on Sepolia Test Network</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">3</div>
+                <div class="step-text">Click the button below to connect</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">4</div>
+                <div class="step-text">Start mining and claiming MTK coins!</div>
+            </div>
+        </div>
+        
+        <button class="big-connect-btn" onclick="connectWallet()">
+            🔗 Connect MetaMask Wallet
+        </button>
+        
+        <div style="margin-top: 20px; color: #aaa; font-size: 14px;">
+            Need help? Make sure MetaMask is installed and unlocked
+        </div>
+    </div>
+    
+    <div id="gameScreen" class="hidden">
+        <h1>🎮 MTK Coin Miner 🪙</h1>
+        
+        <div class="container">
+            <div class="game-section">
+                <h2>Mining Area</h2>
+                <div class="game-container">
+                    <canvas id="gameCanvas" width="800" height="500"></canvas>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="score">0</div>
+                        <div class="stat-label">MTK Coins Mined</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="multiplier">1x</div>
+                        <div class="stat-label">Mining Power</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="miners">1</div>
+                        <div class="stat-label">Active Miners</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="speed">1.0</div>
+                        <div class="stat-label">Mining Speed</div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button onclick="upgradeMiningPower()">⬆️ Upgrade Power (100 MTK)</button>
+                    <button onclick="buyMiner()">👷 Buy Miner (500 MTK)</button>
+                    <button onclick="upgradeSpeed()">⚡ Increase Speed (250 MTK)</button>
+                    <button onclick="claimTokens()" style="grid-column: span 3;">💰 Claim MTK Tokens</button>
+                </div>
+            </div>
+            
+            <div class="wallet-section">
+                <h2>Wallet & Actions</h2>
+                
+                <div class="wallet-info">
+                    <div class="info-row">
+                        <span class="label">Status:</span>
+                        <span class="value" id="walletStatus">Connected ✓</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Account:</span>
+                        <span class="value" id="accountAddress">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Network:</span>
+                        <span class="value" id="network">-</span>
+                    </div>
+                </div>
+                
+                <button onclick="disconnectWallet()" id="disconnectBtn" style="background: linear-gradient(45deg, #ff6b6b, #ee5a52); margin-bottom: 20px;">
+                    🔓 Disconnect Wallet
+                </button>
+                
+                <div class="wallet-info" style="margin-top: 20px;">
+                    <div class="info-row">
+                        <span class="label">Game Balance:</span>
+                        <span class="value" id="gameBalance">0 MTK</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Claimed Balance:</span>
+                        <span class="value" id="claimedBalance">0 MTK</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">ETH Balance:</span>
+                        <span class="value" id="ethBalance">0 ETH</span>
+                    </div>
+                </div>
+                
+                <div class="token-actions">
+                    <button onclick="claimTokens()" style="background: linear-gradient(45deg, #2ed573, #1dd1a1);">
+                        💰 Claim All MTK Tokens
+                    </button>
+                    
+                    <input type="number" id="withdrawAmount" placeholder="Amount to Withdraw" value="100">
+                    <button onclick="withdrawTokens()" style="background: linear-gradient(45deg, #ff9f43, #ffaf40);">
+                        🏦 Withdraw MTK Tokens
+                    </button>
+                    
+                    <button onclick="checkBalances()" style="background: linear-gradient(45deg, #54a0ff, #2e86de);">
+                        🔄 Refresh Balances
+                    </button>
+                </div>
+                
+                <div class="wallet-info" style="margin-top: 20px; background: rgba(46, 213, 115, 0.1); border-color: #2ed573;">
+                    <h3 style="color: #2ed573; margin-bottom: 10px;">📈 Earnings Summary</h3>
+                    <div class="info-row">
+                        <span class="label">Total Mined:</span>
+                        <span class="value" id="totalMined">0 MTK</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Total Claimed:</span>
+                        <span class="value" id="totalClaimed">0 MTK</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Total Withdrawn:</span>
+                        <span class="value" id="totalWithdrawn">0 MTK</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Game Variables
+        let score = 0;
+        let miningPower = 1;
+        let miners = 1;
+        let miningSpeed = 1.0;
+        let gameInterval;
+        let mineSpots = [];
+        let totalMined = 0;
+        let totalClaimed = 0;
+        let totalWithdrawn = 0;
+        let claimedBalance = 0;
+        
+        // Blockchain Variables
+        let web3;
+        let userAccount;
+        let connected = false;
+        
+        // Test Contract Address (DAI on Sepolia)
+        const MTK_CONTRACT_ADDRESS = '0x3e622317f8C93f7328350cF0B56d9eD4C620C5d6';
+        
+        // Game Initialization
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function initGame() {
+            createMineSpots();
+            gameInterval = setInterval(updateGame, 1000 / miningSpeed);
+            updateStats();
+        }
+
+        function createMineSpots() {
+            mineSpots = [];
+            for (let i = 0; i < 5; i++) {
+                mineSpots.push({
+                    x: Math.random() * (canvas.width - 40) + 20,
+                    y: Math.random() * (canvas.height - 40) + 20,
+                    active: true
+                });
+            }
+        }
+
+        function updateGame() {
+            // Draw background
+            ctx.fillStyle = '#16213e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw mine spots
+            mineSpots.forEach(spot => {
+                if (spot.active) {
+                    ctx.fillStyle = '#f8c555';
+                    ctx.beginPath();
+                    ctx.arc(spot.x, spot.y, 10, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Glow effect
+                    ctx.shadowColor = '#f8c555';
+                    ctx.shadowBlur = 20;
+                    ctx.beginPath();
+                    ctx.arc(spot.x, spot.y, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+            });
+            
+            // Auto mining
+            mineSpots.forEach(spot => {
+                if (spot.active && Math.random() < 0.3) {
+                    score += miningPower * miners;
+                    totalMined += miningPower * miners;
+                    updateStats();
+                    showParticle(spot.x, spot.y);
+                }
+            });
+        }
+
+        function showParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'mine-spot';
+            particle.style.left = (x - 10) + 'px';
+            particle.style.top = (y - 10) + 'px';
+            document.querySelector('.game-container').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 1000);
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            mineSpots.forEach(spot => {
+                const distance = Math.sqrt((x - spot.x) ** 2 + (y - spot.y) ** 2);
+                if (distance < 20 && spot.active) {
+                    const minedAmount = miningPower * 10;
+                    score += minedAmount;
+                    totalMined += minedAmount;
+                    spot.active = false;
+                    setTimeout(() => {
+                        spot.active = true;
+                        spot.x = Math.random() * (canvas.width - 40) + 20;
+                        spot.y = Math.random() * (canvas.height - 40) + 20;
+                    }, 1000);
+                    updateStats();
+                    showNotification(`+${minedAmount} MTK mined!`, 'success');
+                }
+            });
+        });
+
+        // Game Functions
+        function upgradeMiningPower() {
+            if (score >= 100) {
+                score -= 100;
+                miningPower++;
+                updateStats();
+                showNotification('Mining power upgraded!', 'success');
+            } else {
+                showNotification('Not enough MTK!', 'error');
+            }
+        }
+
+        function buyMiner() {
+            if (score >= 500) {
+                score -= 500;
+                miners++;
+                updateStats();
+                showNotification('New miner purchased!', 'success');
+            } else {
+                showNotification('Not enough MTK!', 'error');
+            }
+        }
+
+        function upgradeSpeed() {
+            if (score >= 250) {
+                score -= 250;
+                miningSpeed += 0.5;
+                clearInterval(gameInterval);
+                gameInterval = setInterval(updateGame, 1000 / miningSpeed);
+                updateStats();
+                showNotification('Mining speed increased!', 'success');
+            } else {
+                showNotification('Not enough MTK!', 'error');
+            }
+        }
+
+        async function claimTokens() {
+            if (score <= 0) {
+                showNotification('No MTK to claim!', 'error');
+                return;
+            }
+            
+            try {
+                showNotification(`Claiming ${score} MTK tokens...`, 'info');
+                
+                // In a real implementation, this would mint tokens on-chain
+                // For now, we'll simulate claiming
+                
+                claimedBalance += score;
+                totalClaimed += score;
+                
+                const claimedAmount = score;
+                score = 0;
+                
+                updateStats();
+                updateEarnings();
+                
+                setTimeout(() => {
+                    showNotification(`✅ Successfully claimed ${claimedAmount} MTK!`, 'success');
+                }, 1500);
+                
+            } catch (error) {
+                showNotification('Claim failed: ' + error.message, 'error');
+            }
+        }
+
+        async function withdrawTokens() {
+            if (!connected) {
+                showNotification('Wallet not connected!', 'error');
+                return;
+            }
+            
+            const amountInput = document.getElementById('withdrawAmount');
+            const amount = parseFloat(amountInput.value);
+            
+            if (!amount || amount <= 0) {
+                showNotification('Please enter a valid amount', 'error');
+                return;
+            }
+            
+            if (claimedBalance < amount) {
+                showNotification(`Insufficient balance! You have ${claimedBalance} MTK`, 'error');
+                return;
+            }
+            
+            try {
+                showNotification(`Withdrawing ${amount} MTK to your wallet...`, 'info');
+                
+                // In a real implementation, this would transfer tokens on-chain
+                // For demo, we simulate the withdrawal
+                
+                claimedBalance -= amount;
+                totalWithdrawn += amount;
+                
+                updateStats();
+                updateEarnings();
+                
+                setTimeout(() => {
+                    showNotification(`✅ Successfully withdrew ${amount} MTK!`, 'success');
+                }, 2000);
+                
+            } catch (error) {
+                showNotification('Withdrawal failed: ' + error.message, 'error');
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('gameBalance').textContent = `${score} MTK`;
+            document.getElementById('claimedBalance').textContent = `${claimedBalance} MTK`;
+            document.getElementById('multiplier').textContent = `${miningPower}x`;
+            document.getElementById('miners').textContent = miners;
+            document.getElementById('speed').textContent = miningSpeed.toFixed(1);
+        }
+
+        function updateEarnings() {
+            document.getElementById('totalMined').textContent = `${totalMined} MTK`;
+            document.getElementById('totalClaimed').textContent = `${totalClaimed} MTK`;
+            document.getElementById('totalWithdrawn').textContent = `${totalWithdrawn} MTK`;
+        }
+
+        // Wallet Connection Functions
+        async function connectWallet() {
+            try {
+                // Check if MetaMask is installed
+                if (typeof window.ethereum === 'undefined') {
+                    showNotification('Please install MetaMask first!', 'error');
+                    window.open('https://metamask.io/download/', '_blank');
+                    return;
+                }
+
+                // Request account access
+                const accounts = await window.ethereum.request({ 
+                    method: 'eth_requestAccounts' 
+                });
+                
+                if (accounts.length === 0) {
+                    showNotification('Please unlock MetaMask and try again', 'error');
+                    return;
+                }
+                
+                // Initialize Web3
+                web3 = new Web3(window.ethereum);
+                userAccount = accounts[0];
+                
+                // Get network
+                const chainId = await web3.eth.getChainId();
+                
+                // Check if on Sepolia (11155111)
+                if (chainId !== 11155111) {
+                    showNotification('Please switch to Sepolia Testnet', 'warning');
+                    
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: '0xaa36a7' }],
+                        });
+                        // Wait and reload
+                        setTimeout(() => location.reload(), 1000);
+                        return;
+                    } catch (switchError) {
+                        console.log('Switch error:', switchError);
+                    }
+                }
+                
+                // Update UI
+                document.getElementById('accountAddress').textContent = 
+                    `${userAccount.substring(0, 6)}...${userAccount.substring(38)}`;
+                document.getElementById('network').textContent = 'Sepolia Testnet';
+                
+                connected = true;
+                
+                // Switch to game screen
+                document.getElementById('connectionScreen').classList.add('hidden');
+                document.getElementById('gameScreen').classList.remove('hidden');
+                
+                // Start game
+                initGame();
+                
+                // Check balances
+                await checkBalances();
+                
+                showNotification('✅ Wallet connected successfully!', 'success');
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+            } catch (error) {
+                console.error('Connection error:', error);
+                
+                if (error.code === 4001) {
+                    showNotification('Connection rejected by user', 'error');
+                } else {
+                    showNotification('Connection failed: ' + error.message.substring(0, 50), 'error');
+                }
+            }
+        }
+
+        function disconnectWallet() {
+            connected = false;
+            web3 = null;
+            userAccount = null;
+            
+            // Switch back to connection screen
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('connectionScreen').classList.remove('hidden');
+            
+            showNotification('Wallet disconnected', 'info');
+        }
+
+        async function checkBalances() {
+            if (!connected || !web3) return;
+            
+            try {
+                // Check ETH balance
+                const ethBalance = await web3.eth.getBalance(userAccount);
+                const ethFormatted = web3.utils.fromWei(ethBalance, 'ether');
+                document.getElementById('ethBalance').textContent = 
+                    `${parseFloat(ethFormatted).toFixed(4)} ETH`;
+                
+            } catch (error) {
+                console.error('Balance check error:', error);
+                document.getElementById('ethBalance').textContent = 'Error';
+            }
+        }
+
+        function setupEventListeners() {
+            if (window.ethereum) {
+                window.ethereum.on('accountsChanged', (accounts) => {
+                    if (accounts.length === 0) {
+                        disconnectWallet();
+                    } else {
+                        userAccount = accounts[0];
+                        showNotification('Account changed', 'info');
+                        checkBalances();
+                    }
+                });
+                
+                window.ethereum.on('chainChanged', () => {
+                    location.reload();
+                });
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification';
+            
+            if (type === 'error') {
+                notification.style.background = '#ff4757';
+            } else if (type === 'success') {
+                notification.style.background = '#2ed573';
+            } else if (type === 'warning') {
+                notification.style.background = '#ffa502';
+            } else {
+                notification.style.background = '#1e90ff';
+            }
+            
+            setTimeout(() => notification.classList.add('show'), 10);
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+
+        // Initialize
+        window.onload = function() {
+            // Check if already connected to MetaMask
+            if (typeof window.ethereum !== 'undefined') {
+                window.ethereum.request({ method: 'eth_accounts' })
+                    .then(accounts => {
+                        if (accounts.length > 0) {
+                            // Auto-connect if already connected
+                            document.getElementById('connectionScreen').classList.add('hidden');
+                            document.getElementById('gameScreen').classList.remove('hidden');
+                            connectWallet();
+                        }
+                    });
+            }
+        };
+    </script>
+    
+    <!-- Include Web3.js -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+</body>
+</html>
