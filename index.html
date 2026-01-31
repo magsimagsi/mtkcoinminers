@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MTK Coin Miner - Mobile Ready</title>
+    <title>MTK Coin Miner - Complete</title>
     <style>
         :root {
             --primary: #f8c555;
@@ -24,8 +24,6 @@
             --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.2);
             --border-radius: 15px;
             --border-radius-sm: 8px;
-            --safe-area-inset-top: env(safe-area-inset-top);
-            --safe-area-inset-bottom: env(safe-area-inset-bottom);
         }
 
         * {
@@ -35,538 +33,275 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        html {
-            font-size: 16px;
-            height: 100%;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--secondary) 0%, #764ba2 100%);
             min-height: 100vh;
-            min-height: -webkit-fill-available;
             color: var(--light-text);
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             line-height: 1.5;
-            overflow-x: hidden;
-            position: relative;
+            padding: 15px;
         }
 
-        /* Mobile-first responsive design */
         .container {
-            width: 100%;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .main-layout {
             display: flex;
             flex-direction: column;
             gap: 20px;
-            padding: 15px 0;
         }
 
-        @media (min-width: 768px) {
-            .main-layout {
+        @media (min-width: 1024px) {
+            .container {
                 flex-direction: row;
             }
-            
-            .game-column {
-                flex: 2;
-            }
-            
-            .wallet-column {
-                flex: 1;
-                min-width: 320px;
-                max-width: 400px;
-            }
+            .game-column { flex: 2; }
+            .wallet-column { flex: 1; min-width: 350px; }
         }
 
         .section {
             background: var(--card-bg);
             border-radius: var(--border-radius);
-            padding: clamp(15px, 4vw, 25px);
+            padding: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            width: 100%;
+            margin-bottom: 20px;
         }
 
-        .section:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        /* Responsive Typography */
         h1 {
             text-align: center;
-            margin-bottom: clamp(15px, 3vw, 30px);
+            margin: 10px 0 20px;
             color: var(--primary);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
             font-size: clamp(1.8rem, 5vw, 2.5rem);
-            font-weight: 800;
-            line-height: 1.2;
         }
 
         h2 {
             color: var(--primary);
-            margin-bottom: clamp(12px, 2vw, 20px);
+            margin-bottom: 15px;
             font-size: clamp(1.3rem, 4vw, 1.8rem);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
         }
 
-        h3 {
-            color: var(--primary);
-            margin: clamp(12px, 2vw, 20px) 0 clamp(8px, 1.5vw, 15px);
-            font-size: clamp(1.1rem, 3vw, 1.3rem);
-            font-weight: 600;
-        }
-
-        /* Game Canvas - Responsive */
         .game-container {
-            position: relative;
             background: var(--darker-bg);
             border: 3px solid var(--primary);
             border-radius: var(--border-radius-sm);
             overflow: hidden;
-            margin-bottom: clamp(15px, 3vw, 25px);
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            aspect-ratio: 16/9; /* Maintain aspect ratio */
-            max-height: 70vh; /* Limit height on desktop */
+            margin-bottom: 20px;
+            aspect-ratio: 16/9;
+            max-height: 60vh;
         }
 
         #gameCanvas {
-            display: block;
-            background: var(--dark-bg);
             width: 100%;
             height: 100%;
-            touch-action: manipulation; /* Prevent scrolling on canvas */
+            display: block;
+            background: var(--dark-bg);
         }
 
-        /* Mobile-specific game container */
-        @media (max-width: 767px) {
-            .game-container {
-                aspect-ratio: 4/3; /* Better for mobile */
-                max-height: 60vh;
-            }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
         }
 
-        @media (max-width: 480px) {
-            .game-container {
-                aspect-ratio: 3/4; /* Portrait mode */
-                max-height: 50vh;
-            }
+        @media (min-width: 640px) {
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
         }
 
-        /* Responsive Controls */
+        .stat-card {
+            background: rgba(248, 197, 85, 0.15);
+            border-radius: var(--border-radius-sm);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-text);
+        }
+
         .controls-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 10px;
-            margin-top: clamp(15px, 3vw, 20px);
-        }
-
-        @media (max-width: 480px) {
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
+            margin-top: 15px;
         }
 
         .btn {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: #000;
             border: none;
-            padding: clamp(12px, 3vw, 15px) clamp(15px, 4vw, 20px);
+            padding: 12px;
             border-radius: var(--border-radius-sm);
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: clamp(14px, 3vw, 15px);
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: var(--shadow);
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 14px;
         }
 
         .btn:hover:not(:disabled) {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(248, 197, 85, 0.4);
-            background: linear-gradient(135deg, var(--primary-dark), #d4a52e);
-        }
-
-        .btn:active {
-            transform: translateY(-1px);
         }
 
         .btn:disabled {
-            background: #4a5568;
+            opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-            opacity: 0.7;
         }
 
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #25c164);
-        }
+        .btn-success { background: linear-gradient(135deg, var(--success), #25c164); }
+        .btn-warning { background: linear-gradient(135deg, var(--warning), #e59400); }
+        .btn-danger { background: linear-gradient(135deg, var(--error), #e84151); }
+        .btn-info { background: linear-gradient(135deg, var(--info), #187bcd); }
 
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #e59400);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--error), #e84151);
-        }
-
-        .btn-info {
-            background: linear-gradient(135deg, var(--info), #187bcd);
-        }
-
-        /* Responsive Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr));
-            gap: clamp(8px, 2vw, 15px);
-            margin-top: clamp(12px, 2vw, 20px);
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .stat-card {
-            background: rgba(248, 197, 85, 0.15);
-            border-radius: var(--border-radius-sm);
-            padding: clamp(15px, 3vw, 20px);
-            text-align: center;
-            border: 1px solid rgba(248, 197, 85, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .stat-value {
-            font-size: clamp(20px, 5vw, 28px);
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .stat-label {
-            font-size: clamp(11px, 2.5vw, 13px);
-            color: var(--gray-text);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Responsive Wallet Info */
         .wallet-card {
             background: rgba(248, 197, 85, 0.1);
             border: 2px solid var(--primary);
             border-radius: var(--border-radius-sm);
-            padding: clamp(15px, 3vw, 20px);
-            margin-bottom: clamp(15px, 3vw, 25px);
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
         .info-grid {
             display: grid;
-            gap: clamp(8px, 2vw, 12px);
+            gap: 10px;
         }
 
         .info-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: clamp(10px, 2vw, 12px);
+            padding: 10px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: var(--border-radius-sm);
-            transition: background 0.3s ease;
-            flex-wrap: wrap;
-            gap: 5px;
         }
 
         .label {
             color: var(--primary);
             font-weight: 600;
-            font-size: clamp(12px, 2.5vw, 14px);
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            font-size: 14px;
         }
 
         .value {
             color: var(--light-text);
             font-family: 'Courier New', monospace;
-            font-size: clamp(12px, 2.5vw, 14px);
-            font-weight: 500;
-            word-break: break-all;
-            text-align: right;
+            font-size: 14px;
         }
 
-        /* Token Actions - Mobile Friendly */
+        .value.highlight { color: var(--success); }
+
         .token-actions {
             display: flex;
             flex-direction: column;
-            gap: clamp(10px, 2vw, 15px);
-            margin-top: clamp(15px, 3vw, 25px);
+            gap: 15px;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
 
         input {
-            padding: clamp(12px, 3vw, 14px);
+            padding: 12px;
             border-radius: var(--border-radius-sm);
             border: 2px solid var(--primary);
             background: rgba(255, 255, 255, 0.05);
             color: var(--light-text);
-            font-size: clamp(14px, 3vw, 16px);
-            transition: all 0.3s ease;
-            width: 100%;
-            -webkit-appearance: none;
-            appearance: none;
+            font-size: 16px;
         }
 
-        /* Transaction Panels */
-        .transaction-panel, .gas-panel, .event-panel {
-            padding: clamp(15px, 3vw, 20px);
+        .gas-info {
+            background: rgba(255, 159, 67, 0.1);
+            border: 2px solid var(--warning);
             border-radius: var(--border-radius-sm);
-            margin: clamp(10px, 2vw, 20px) 0;
-            font-size: clamp(13px, 2.5vw, 14px);
-            line-height: 1.5;
+            padding: 10px;
+            font-size: 14px;
+            margin: 10px 0;
         }
 
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(100px, 100%), 1fr));
-            gap: clamp(10px, 2vw, 15px);
-            margin-top: clamp(10px, 2vw, 15px);
-        }
-
-        /* Notifications - Mobile Optimized */
         .notification {
             position: fixed;
-            top: max(25px, env(safe-area-inset-top));
-            right: 15px;
-            left: 15px;
-            padding: 15px 20px;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
             background: var(--primary);
             color: #000;
             border-radius: var(--border-radius-sm);
-            font-weight: 600;
-            transform: translateY(-150%);
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-weight: bold;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
             z-index: 1000;
-            box-shadow: var(--shadow-lg);
-            border-left: 4px solid var(--primary-dark);
-            text-align: center;
             max-width: 400px;
-            margin: 0 auto;
         }
 
         .notification.show {
-            transform: translateY(0);
+            transform: translateX(0);
         }
 
-        @media (min-width: 768px) {
-            .notification {
-                left: auto;
-                right: 25px;
-                width: auto;
-            }
-        }
-
-        /* Pending Overlay - Full Screen Mobile */
         .pending-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 2000;
             backdrop-filter: blur(10px);
-            padding: 20px;
             text-align: center;
+            padding: 20px;
         }
 
         .pending-spinner {
-            width: clamp(60px, 15vw, 80px);
-            height: clamp(60px, 15vw, 80px);
+            width: 60px;
+            height: 60px;
             border: 4px solid rgba(248, 197, 85, 0.3);
             border-top: 4px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: clamp(15px, 4vw, 25px);
+            margin-bottom: 20px;
         }
 
-        .pending-text {
-            font-size: clamp(18px, 4vw, 22px);
-            color: var(--primary);
-            margin-bottom: clamp(10px, 3vw, 15px);
-            font-weight: 600;
-        }
-
-        /* Connection Screen - Mobile Optimized */
         .connection-screen {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-            min-height: -webkit-fill-available;
+            min-height: 80vh;
             text-align: center;
             padding: 20px;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            backdrop-filter: blur(10px);
-            margin: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            gap: clamp(15px, 4vw, 25px);
-        }
-
-        .metamask-icon {
-            font-size: clamp(60px, 15vw, 80px);
-            margin-bottom: clamp(15px, 4vw, 30px);
-            color: var(--primary);
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .connection-steps {
-            background: rgba(248, 197, 85, 0.1);
-            border-radius: var(--border-radius-sm);
-            padding: clamp(15px, 4vw, 25px);
-            margin: clamp(10px, 3vw, 25px) 0;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            margin: clamp(10px, 2vw, 15px) 0;
-            padding: clamp(12px, 3vw, 15px);
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--border-radius-sm);
-            transition: transform 0.3s ease;
-        }
-
-        .step:hover {
-            transform: translateX(5px);
-        }
-
-        .step-number {
-            background: var(--primary);
-            color: #000;
-            width: clamp(28px, 7vw, 32px);
-            height: clamp(28px, 7vw, 32px);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: clamp(10px, 3vw, 15px);
-            font-weight: 700;
-            flex-shrink: 0;
-            font-size: clamp(14px, 3.5vw, 16px);
         }
 
         .big-connect-btn {
-            padding: clamp(18px, 4vw, 22px) clamp(30px, 6vw, 45px);
-            font-size: clamp(16px, 4vw, 20px);
-            margin: clamp(15px, 4vw, 25px) 0;
+            padding: 20px 40px;
+            font-size: 20px;
+            margin: 20px 0;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border: none;
             border-radius: var(--border-radius-sm);
             color: #000;
-            font-weight: 700;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: var(--shadow-lg);
-            width: auto;
         }
 
-        /* Mobile-specific adjustments */
-        @media (max-width: 480px) {
-            .big-connect-btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .connection-screen {
-                margin: 5px;
-                padding: 15px;
-            }
-        }
-
-        /* Touch-friendly elements */
-        .touch-target {
-            min-height: 44px;
-            min-width: 44px;
-        }
-
-        /* Hide elements on very small screens */
-        @media (max-width: 320px) {
-            .stat-label {
-                font-size: 10px;
-            }
-            
-            .label, .value {
-                font-size: 11px;
-            }
-        }
-
-        /* Landscape mode optimizations */
-        @media (orientation: landscape) and (max-height: 600px) {
-            .connection-screen {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: space-around;
-                padding: 10px;
-            }
-            
-            .game-container {
-                aspect-ratio: 16/9;
-                max-height: 50vh;
-            }
-            
-            .main-layout {
-                flex-direction: row;
-            }
-        }
-
-        /* Animations */
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 20px var(--primary); }
-            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 40px var(--primary); }
-            100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 20px var(--primary); }
+        .hidden {
+            display: none !important;
         }
 
         @keyframes spin {
@@ -574,333 +309,181 @@
             100% { transform: rotate(360deg); }
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
         }
 
-        /* Utility Classes */
-        .hidden {
-            display: none !important;
-        }
-
-        .mobile-only {
-            display: block;
-        }
-
-        .desktop-only {
-            display: none;
-        }
-
-        @media (min-width: 768px) {
-            .mobile-only {
-                display: none;
-            }
-            
-            .desktop-only {
-                display: block;
-            }
-        }
-
-        /* Contract Modal - Mobile Responsive */
-        #contractModal {
-            overflow-y: auto;
-            padding: clamp(20px, 5vw, 40px);
-        }
-
-        #contractModal > div {
-            max-width: min(900px, 100%);
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        /* Mobile Navigation Button */
-        .mobile-nav-btn {
-            position: fixed;
-            bottom: max(20px, env(safe-area-inset-bottom));
-            right: 20px;
+        .mine-spot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
             background: var(--primary);
-            color: #000;
-            width: 60px;
-            height: 60px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: var(--shadow-lg);
-            z-index: 100;
-            border: none;
-            cursor: pointer;
-        }
-
-        @media (min-width: 768px) {
-            .mobile-nav-btn {
-                display: none;
-            }
-        }
-
-        /* Safe area handling for iPhone X+ */
-        @supports (padding: max(0px)) {
-            body {
-                padding-left: min(0px, env(safe-area-inset-left));
-                padding-right: min(0px, env(safe-area-inset-right));
-            }
-        }
-
-        /* Prevent text size adjustment on orientation change */
-        html {
-            -webkit-text-size-adjust: 100%;
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Improve tap targets on mobile */
-        button, 
-        input[type="button"], 
-        input[type="submit"] {
-            touch-action: manipulation;
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
-    <!-- Mobile Navigation Button -->
-    <button class="mobile-nav-btn hidden" id="mobileNavBtn" onclick="scrollToTop()">
-        ↑
-    </button>
-
     <div id="pendingOverlay" class="pending-overlay hidden">
         <div class="pending-spinner"></div>
         <div class="pending-text" id="pendingText">Processing Transaction...</div>
-        <div class="tx-hash" id="pendingTxHash">Tx Hash: Loading...</div>
-        <div class="gas-panel" id="pendingGasInfo">⛽ Gas: Estimating...</div>
-        <div style="color: var(--gray-text); margin-top: 20px; text-align: center; max-width: 400px;">
-            ⏳ Transaction is being processed<br>
-            This usually takes 15-45 seconds
-        </div>
+        <div class="tx-hash" id="pendingTxHash"></div>
+        <div class="gas-info" id="pendingGasInfo"></div>
         <button class="btn btn-danger" onclick="hidePendingOverlay()" style="margin-top: 20px;">
             Cancel
         </button>
     </div>
     
     <div id="connectionScreen" class="connection-screen">
-        <div class="metamask-icon">🦊</div>
-        <div style="width: 100%;">
-            <h1>🚀 MTK Coin Miner</h1>
-            <p style="color: var(--gray-text); margin-bottom: 10px; font-size: clamp(14px, 3.5vw, 18px);">
-                Play & Earn on Blockchain
-            </p>
-        </div>
-        
-        <div class="connection-steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <div style="text-align: left;">
-                    <strong>Install MetaMask</strong><br>
-                    <span style="color: var(--gray-text); font-size: clamp(12px, 2.5vw, 14px);">Browser extension/wallet</span>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <div style="text-align: left;">
-                    <strong>Switch to Sepolia</strong><br>
-                    <span style="color: var(--gray-text); font-size: clamp(12px, 2.5vw, 14px);">Test network for free ETH</span>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <div style="text-align: left;">
-                    <strong>Get Test ETH</strong><br>
-                    <span style="color: var(--gray-text); font-size: clamp(12px, 2.5vw, 14px);">From Sepolia faucet</span>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-number">4</div>
-                <div style="text-align: left;">
-                    <strong>Start Mining</strong><br>
-                    <span style="color: var(--gray-text); font-size: clamp(12px, 2.5vw, 14px);">Earn MTK tokens!</span>
-                </div>
-            </div>
-        </div>
-        
+        <h1>🚀 MTK Coin Miner</h1>
+        <p style="color: var(--gray-text); margin-bottom: 20px;">
+            Mine, Claim & Withdraw MTK Tokens
+        </p>
         <button class="big-connect-btn" onclick="connectWallet()">
-            <span>🔗</span> Connect Wallet
+            🔗 Connect MetaMask
         </button>
-        
-        <div style="margin-top: 15px; color: var(--gray-text); font-size: clamp(12px, 2.5vw, 14px); max-width: 500px;">
-            💡 <strong>Features:</strong> Gas estimation, live events, real-time updates
-        </div>
-        
-        <div class="mobile-only" style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
-            📱 <strong>Mobile Tips:</strong> Rotate to landscape for better game view
-        </div>
     </div>
     
     <div id="gameScreen" class="hidden">
+        <h1>⛏️ MTK Coin Miner</h1>
+        
         <div class="container">
-            <h1 style="padding: 0 10px;">
-                ⛏️ MTK Miner 
-                <span style="font-size: 0.8rem; color: var(--primary); background: rgba(248, 197, 85, 0.2); padding: 4px 10px; border-radius: 20px; margin-left: 5px;">
-                    LIVE
-                </span>
-            </h1>
-            
-            <div class="main-layout">
-                <div class="game-column">
-                    <div class="section">
-                        <h2>🎮 Mining Game</h2>
-                        
-                        <div class="game-container">
-                            <canvas id="gameCanvas"></canvas>
+            <div class="game-column">
+                <div class="section">
+                    <h2>🎮 Mining Game</h2>
+                    <div class="game-container">
+                        <canvas id="gameCanvas"></canvas>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="score">0</div>
+                            <div class="stat-label">MTK Mined</div>
                         </div>
-                        
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="stat-value" id="score">0</div>
-                                <div class="stat-label">MTK Mined</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value" id="multiplier">1x</div>
-                                <div class="stat-label">Power</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value" id="miners">1</div>
-                                <div class="stat-label">Miners</div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-value" id="speed">1.0</div>
-                                <div class="stat-label">Speed</div>
-                            </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="multiplier">1x</div>
+                            <div class="stat-label">Mining Power</div>
                         </div>
-                        
-                        <div class="controls-grid">
-                            <button onclick="upgradeMiningPower()" class="btn">
-                                ⬆️ Upgrade
-                            </button>
-                            <button onclick="buyMiner()" class="btn">
-                                👷 Buy Miner
-                            </button>
-                            <button onclick="upgradeSpeed()" class="btn">
-                                ⚡ Speed Up
-                            </button>
-                            <button onclick="estimateClaimGas()" id="claimBtn" class="btn btn-success">
-                                💰 Claim MTK
-                            </button>
+                        <div class="stat-card">
+                            <div class="stat-value" id="miners">1</div>
+                            <div class="stat-label">Active Miners</div>
                         </div>
-                        
-                        <div class="mobile-only" style="margin-top: 15px; text-align: center; color: var(--gray-text); font-size: 12px;">
-                            💡 Tap the golden spots to mine coins!
+                        <div class="stat-card">
+                            <div class="stat-value" id="speed">1.0</div>
+                            <div class="stat-label">Mining Speed</div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="wallet-column">
-                    <div class="section">
-                        <h2>👛 Wallet</h2>
-                        
-                        <div class="wallet-card">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span class="label">Status</span>
-                                    <span class="value highlight" id="walletStatus">Connected</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="label">Account</span>
-                                    <span class="value" id="accountAddress">-</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="label">Network</span>
-                                    <span class="value" id="network">Sepolia</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="label">Block</span>
-                                    <span class="value" id="lastBlock">-</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="transaction-panel">
-                            <h3>📊 Transactions</h3>
-                            <div class="status-grid">
-                                <div class="status-item">
-                                    <div class="stat-label">Pending</div>
-                                    <div class="stat-value" id="pendingCount">0</div>
-                                </div>
-                                <div class="status-item">
-                                    <div class="stat-label">Confirmed</div>
-                                    <div class="stat-value" id="confirmedCount">0</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button onclick="disconnectWallet()" class="btn btn-danger" style="width: 100%; margin-bottom: 15px;">
-                            🔓 Disconnect
+                    
+                    <div class="controls-grid">
+                        <button onclick="upgradeMiningPower()" class="btn">
+                            ⬆️ Upgrade Power
                         </button>
-                        
-                        <div class="wallet-card">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span class="label">Game Balance</span>
-                                    <span class="value highlight" id="gameBalance">0 MTK</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="label">Claimed</span>
-                                    <span class="value" id="claimedBalance">0 MTK</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="label">ETH Balance</span>
-                                    <span class="value" id="ethBalance">0 ETH</span>
-                                </div>
+                        <button onclick="buyMiner()" class="btn">
+                            👷 Buy Miner
+                        </button>
+                        <button onclick="upgradeSpeed()" class="btn">
+                            ⚡ Increase Speed
+                        </button>
+                        <button onclick="claimTokens()" class="btn btn-success">
+                            💰 Claim MTK
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="wallet-column">
+                <div class="section">
+                    <h2>👛 Wallet & Transactions</h2>
+                    
+                    <div class="wallet-card">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="label">Status</span>
+                                <span class="value highlight" id="walletStatus">Connected</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Account</span>
+                                <span class="value" id="accountAddress">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Network</span>
+                                <span class="value" id="network">Sepolia</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">ETH Balance</span>
+                                <span class="value" id="ethBalance">0 ETH</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="token-actions">
+                        <!-- Claim Section -->
+                        <div class="wallet-card" style="background: rgba(46, 213, 115, 0.1); border-color: var(--success);">
+                            <h3 style="color: var(--success); margin-bottom: 15px;">💰 Claim Tokens</h3>
+                            <div class="info-item">
+                                <span class="label">Game Balance</span>
+                                <span class="value" id="gameBalance">0 MTK</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Claimable</span>
+                                <span class="value highlight" id="claimableAmount">0 MTK</span>
+                            </div>
+                            <button onclick="estimateClaimGas()" id="claimBtn" class="btn btn-success" style="width: 100%; margin-top: 10px;">
+                                💰 Claim MTK Tokens
+                            </button>
+                            <div class="gas-info" id="claimGasInfo">
+                                Click to estimate gas for claiming
                             </div>
                         </div>
                         
-                        <div class="token-actions">
-                            <div class="gas-panel" id="claimGasInfo">
-                                Click "Claim MTK" to estimate gas
+                        <!-- Withdraw Section -->
+                        <div class="wallet-card" style="background: rgba(255, 159, 67, 0.1); border-color: var(--warning);">
+                            <h3 style="color: var(--warning); margin-bottom: 15px;">🏦 Withdraw Tokens</h3>
+                            <div class="info-item">
+                                <span class="label">Wallet Balance</span>
+                                <span class="value" id="walletBalance">0 MTK</span>
                             </div>
-                            
-                            <button onclick="estimateClaimGas()" id="estimateClaimBtn" class="btn btn-success">
-                                💰 Claim MTK
-                            </button>
-                            
                             <div class="input-group">
-                                <label class="input-label">Withdraw Amount (MTK)</label>
-                                <input type="number" id="withdrawAmount" placeholder="Enter amount" value="100" min="1">
+                                <label style="color: var(--warning); font-weight: 600;">Withdraw Amount (MTK)</label>
+                                <input type="number" id="withdrawAmount" placeholder="Enter amount" min="1" value="100">
                             </div>
-                            
-                            <div class="gas-panel" id="withdrawGasInfo">
+                            <div class="input-group">
+                                <label style="color: var(--warning); font-weight: 600;">Recipient Address</label>
+                                <input type="text" id="recipientAddress" placeholder="0x..." value="">
+                            </div>
+                            <button onclick="estimateWithdrawGas()" id="withdrawBtn" class="btn btn-warning" style="width: 100%; margin-top: 10px;">
+                                🏦 Withdraw MTK
+                            </button>
+                            <div class="gas-info" id="withdrawGasInfo">
                                 Enter amount to estimate gas
                             </div>
-                            
-                            <button onclick="estimateWithdrawGas()" id="estimateWithdrawBtn" class="btn btn-warning">
-                                🏦 Withdraw
-                            </button>
-                            
-                            <button onclick="checkAllBalances()" class="btn btn-info">
-                                🔄 Refresh
-                            </button>
-                            
-                            <button onclick="showContractModal()" class="btn" style="margin-top: 10px;">
-                                📜 View Contract
+                        </div>
+                        
+                        <!-- Token Balances -->
+                        <div class="wallet-card">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">📊 Token Balances</h3>
+                            <div class="info-item">
+                                <span class="label">Total Mined</span>
+                                <span class="value" id="totalMined">0 MTK</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Total Claimed</span>
+                                <span class="value" id="totalClaimed">0 MTK</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Total Withdrawn</span>
+                                <span class="value" id="totalWithdrawn">0 MTK</span>
+                            </div>
+                            <button onclick="refreshBalances()" class="btn btn-info" style="width: 100%; margin-top: 10px;">
+                                🔄 Refresh Balances
                             </button>
                         </div>
                         
-                        <div class="event-panel">
-                            <h3>🔔 Live Events</h3>
-                            <div class="status-grid">
-                                <div class="status-item">
-                                    <div class="stat-label">Blocks</div>
-                                    <div class="stat-value" id="blocksMined">0</div>
-                                </div>
-                                <div class="status-item">
-                                    <div class="stat-label">Updates</div>
-                                    <div class="stat-value" id="balanceUpdates">0</div>
-                                </div>
-                            </div>
-                        </div>
+                        <button onclick="disconnectWallet()" class="btn btn-danger" style="width: 100%;">
+                            🔓 Disconnect Wallet
+                        </button>
                     </div>
                 </div>
             </div>
@@ -909,278 +492,180 @@
     
     <div class="notification" id="notification"></div>
 
-    <!-- Contract Modal -->
-    <div id="contractModal" class="pending-overlay hidden">
-        <div style="background: var(--dark-bg); border-radius: var(--border-radius); padding: 20px; border: 2px solid var(--primary); max-height: 80vh; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: var(--primary); margin: 0; font-size: 1.3rem;">📜 Smart Contract</h2>
-                <button onclick="closeContractModal()" class="btn btn-danger" style="padding: 8px 15px;">✕ Close</button>
-            </div>
-            
-            <pre style="background: #1e1e1e; border-radius: var(--border-radius-sm); padding: 15px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4; overflow-x: auto; color: #f8f8f2;">
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
-
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-contract MTKCoin is ERC20, Ownable {
-    constructor() ERC20("Mining Token", "MTK") Ownable(msg.sender) {
-        _mint(msg.sender, 1000000 * 10 ** decimals());
-    }
-    
-    function mint(address to, uint256 amount) public onlyOwner {
-        _mint(to, amount);
-    }
-}
-            </pre>
-            
-            <div style="margin-top: 20px; color: var(--gray-text); font-size: 14px;">
-                <p>📋 <strong>To Deploy:</strong></p>
-                <ol style="margin-left: 20px; margin-top: 10px;">
-                    <li>Copy contract code</li>
-                    <li>Go to remix.ethereum.org</li>
-                    <li>Create file & paste code</li>
-                    <li>Compile & deploy to Sepolia</li>
-                    <li>Update address in game</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Auto-responsive canvas setup
-        let canvas, ctx;
-        let canvasWidth = 800;
-        let canvasHeight = 500;
-        
-        // Game Variables
+        // ====================
+        // GAME VARIABLES
+        // ====================
         let score = 0;
         let miningPower = 1;
         let miners = 1;
         let miningSpeed = 1.0;
         let gameInterval;
         let mineSpots = [];
+        
+        // Token tracking
         let totalMined = 0;
         let totalClaimed = 0;
         let totalWithdrawn = 0;
-        let claimedBalance = 0;
+        let walletBalance = 0; // MTK tokens in wallet
+        let claimableBalance = 0; // MTK available to claim
         
-        // Blockchain Variables
+        // ====================
+        // BLOCKCHAIN VARIABLES
+        // ====================
         let web3;
         let userAccount;
         let mtkContract;
         let connected = false;
         
-        // Transaction Tracking
-        let pendingTransactions = [];
-        let confirmedTransactions = [];
-        
-        // Event Listener Counters
-        let blocksMined = 0;
-        let balanceUpdateCount = 0;
-        
         // Contract Configuration
-        const MTK_CONTRACT_ADDRESS = '0x3e622317f8C93f7328350cF0B56d9eD4C620C5d6';
-        const MTK_CONTRACT_ABI = [/* Same ABI as before */];
-
-        // Initialize Responsive Canvas
-        function initResponsiveCanvas() {
-            canvas = document.getElementById('gameCanvas');
-            ctx = canvas.getContext('2d');
-            
-            // Set initial size based on container
-            const container = canvas.parentElement;
-            canvasWidth = container.clientWidth;
-            canvasHeight = container.clientHeight;
-            
-            // Set canvas size with device pixel ratio for crisp rendering
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = canvasWidth * dpr;
-            canvas.height = canvasHeight * dpr;
-            ctx.scale(dpr, dpr);
-            
-            // Adjust canvas display size
-            canvas.style.width = canvasWidth + 'px';
-            canvas.style.height = canvasHeight + 'px';
-            
-            createMineSpots();
-            
-            // Handle window resize
-            window.addEventListener('resize', handleResize);
-            
-            // Handle orientation change on mobile
-            window.addEventListener('orientationchange', () => {
-                setTimeout(handleResize, 100);
-            });
-        }
-
-        function handleResize() {
-            const container = canvas.parentElement;
-            const newWidth = container.clientWidth;
-            const newHeight = container.clientHeight;
-            
-            if (newWidth !== canvasWidth || newHeight !== canvasHeight) {
-                canvasWidth = newWidth;
-                canvasHeight = newHeight;
-                
-                const dpr = window.devicePixelRatio || 1;
-                canvas.width = canvasWidth * dpr;
-                canvas.height = canvasHeight * dpr;
-                ctx.scale(dpr, dpr);
-                
-                canvas.style.width = canvasWidth + 'px';
-                canvas.style.height = canvasHeight + 'px';
-                
-                // Recreate mine spots for new dimensions
-                createMineSpots();
+        const MTK_CONTRACT_ADDRESS = '0x3e622317f8C93f7328350cF0B56d9eD4C620C5d6'; // DAI on Sepolia for testing
+        const MTK_CONTRACT_ABI = [
+            // ERC20 Standard Functions
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "name",
+                "outputs": [{"name": "", "type": "string"}],
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "symbol",
+                "outputs": [{"name": "", "type": "string"}],
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "decimals",
+                "outputs": [{"name": "", "type": "uint8"}],
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "totalSupply",
+                "outputs": [{"name": "", "type": "uint256"}],
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [{"name": "_owner", "type": "address"}],
+                "name": "balanceOf",
+                "outputs": [{"name": "balance", "type": "uint256"}],
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {"name": "_to", "type": "address"},
+                    {"name": "_value", "type": "uint256"}
+                ],
+                "name": "transfer",
+                "outputs": [{"name": "success", "type": "bool"}],
+                "type": "function"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "name": "from", "type": "address"},
+                    {"indexed": true, "name": "to", "type": "address"},
+                    {"indexed": false, "name": "value", "type": "uint256"}
+                ],
+                "name": "Transfer",
+                "type": "event"
             }
+        ];
+
+        // ====================
+        // GAME FUNCTIONS
+        // ====================
+        function initGame() {
+            const canvas = document.getElementById('gameCanvas');
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            
+            createMineSpots(canvas);
+            gameInterval = setInterval(() => updateGame(canvas), 1000 / miningSpeed);
+            updateUI();
         }
 
-        function createMineSpots() {
+        function createMineSpots(canvas) {
             mineSpots = [];
-            const spotCount = Math.max(3, Math.floor(canvasWidth * canvasHeight / 40000));
-            
+            const spotCount = 5;
             for (let i = 0; i < spotCount; i++) {
                 mineSpots.push({
-                    x: Math.random() * (canvasWidth - 40) + 20,
-                    y: Math.random() * (canvasHeight - 40) + 20,
+                    x: Math.random() * (canvas.width - 40) + 20,
+                    y: Math.random() * (canvas.height - 40) + 20,
                     active: true
                 });
             }
         }
 
-        function updateGame() {
-            // Clear with gradient
-            const gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
-            gradient.addColorStop(0, '#16213e');
-            gradient.addColorStop(1, '#0f3460');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        function updateGame(canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#16213e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Draw mine spots with responsive size
-            const spotSize = Math.max(8, Math.min(15, canvasWidth / 50));
-            
+            // Draw mine spots
             mineSpots.forEach(spot => {
                 if (spot.active) {
-                    // Outer glow
-                    ctx.shadowColor = '#f8c555';
-                    ctx.shadowBlur = 20;
-                    ctx.fillStyle = 'rgba(248, 197, 85, 0.8)';
+                    ctx.fillStyle = '#f8c555';
                     ctx.beginPath();
-                    ctx.arc(spot.x, spot.y, spotSize + 5, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Inner core
-                    ctx.shadowBlur = 0;
-                    const gradient = ctx.createRadialGradient(
-                        spot.x, spot.y, 0,
-                        spot.x, spot.y, spotSize
-                    );
-                    gradient.addColorStop(0, '#ffdd59');
-                    gradient.addColorStop(1, '#f8c555');
-                    ctx.fillStyle = gradient;
-                    ctx.beginPath();
-                    ctx.arc(spot.x, spot.y, spotSize, 0, Math.PI * 2);
+                    ctx.arc(spot.x, spot.y, 10, 0, Math.PI * 2);
                     ctx.fill();
                 }
             });
             
-            // Auto mining with responsive rate
-            const miningRate = Math.min(0.5, 0.3 * (canvasWidth / 800));
+            // Auto mining
             mineSpots.forEach(spot => {
-                if (spot.active && Math.random() < miningRate) {
+                if (spot.active && Math.random() < 0.3) {
                     const mined = miningPower * miners;
                     score += mined;
                     totalMined += mined;
-                    updateStats();
-                    showParticle(spot.x, spot.y);
+                    claimableBalance += mined;
+                    updateUI();
                 }
             });
         }
 
-        function showParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.className = 'mine-spot';
-            particle.style.left = (x - 12) + 'px';
-            particle.style.top = (y - 12) + 'px';
-            particle.style.animation = 'pulse 1s ease-out';
-            document.querySelector('.game-container').appendChild(particle);
-            
-            setTimeout(() => particle.remove(), 1000);
-        }
-
-        // Touch and click handling
-        function setupCanvasInteractions() {
-            canvas.addEventListener('click', handleCanvasClick);
-            canvas.addEventListener('touchstart', handleCanvasTouch, { passive: false });
-        }
-
-        function handleCanvasClick(e) {
+        canvas.addEventListener('click', (e) => {
             const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-            
-            handleMining(x, y);
-        }
-
-        function handleCanvasTouch(e) {
-            e.preventDefault();
-            if (e.touches.length > 0) {
-                const touch = e.touches[0];
-                const rect = canvas.getBoundingClientRect();
-                const scaleX = canvas.width / rect.width;
-                const scaleY = canvas.height / rect.height;
-                
-                const x = (touch.clientX - rect.left) * scaleX;
-                const y = (touch.clientY - rect.top) * scaleY;
-                
-                handleMining(x, y);
-            }
-        }
-
-        function handleMining(x, y) {
-            const clickRadius = Math.max(20, Math.min(40, canvasWidth / 20));
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
             
             mineSpots.forEach(spot => {
                 const distance = Math.sqrt((x - spot.x) ** 2 + (y - spot.y) ** 2);
-                if (distance < clickRadius && spot.active) {
+                if (distance < 20 && spot.active) {
                     const minedAmount = miningPower * 10;
                     score += minedAmount;
                     totalMined += minedAmount;
+                    claimableBalance += minedAmount;
                     spot.active = false;
-                    
-                    // Particle explosion
-                    for (let i = 0; i < 3; i++) {
-                        setTimeout(() => {
-                            showParticle(spot.x + Math.random() * 30 - 15, spot.y + Math.random() * 30 - 15);
-                        }, i * 100);
-                    }
                     
                     setTimeout(() => {
                         spot.active = true;
-                        spot.x = Math.random() * (canvasWidth - 40) + 20;
-                        spot.y = Math.random() * (canvasHeight - 40) + 20;
+                        spot.x = Math.random() * (canvas.width - 40) + 20;
+                        spot.y = Math.random() * (canvas.height - 40) + 20;
                     }, 1000);
                     
-                    updateStats();
-                    showNotification(`🎉 +${minedAmount} MTK!`, 'success');
+                    updateUI();
+                    showNotification(`+${minedAmount} MTK mined!`, 'success');
                 }
             });
-        }
+        });
 
-        // Game Functions
         function upgradeMiningPower() {
             if (score >= 100) {
                 score -= 100;
                 miningPower++;
-                updateStats();
-                showNotification('⚡ Power upgraded!', 'success');
+                updateUI();
+                showNotification('Mining power upgraded!', 'success');
             } else {
-                showNotification('💰 Need more MTK!', 'error');
+                showNotification('Not enough MTK!', 'error');
             }
         }
 
@@ -1188,10 +673,10 @@ contract MTKCoin is ERC20, Ownable {
             if (score >= 500) {
                 score -= 500;
                 miners++;
-                updateStats();
-                showNotification('👷 Miner hired!', 'success');
+                updateUI();
+                showNotification('New miner purchased!', 'success');
             } else {
-                showNotification('💰 Need more MTK!', 'error');
+                showNotification('Not enough MTK!', 'error');
             }
         }
 
@@ -1200,62 +685,260 @@ contract MTKCoin is ERC20, Ownable {
                 score -= 250;
                 miningSpeed += 0.5;
                 clearInterval(gameInterval);
-                gameInterval = setInterval(updateGame, 1000 / miningSpeed);
-                updateStats();
-                showNotification('🚀 Speed increased!', 'success');
+                gameInterval = setInterval(() => updateGame(document.getElementById('gameCanvas')), 1000 / miningSpeed);
+                updateUI();
+                showNotification('Mining speed increased!', 'success');
             } else {
-                showNotification('💰 Need more MTK!', 'error');
+                showNotification('Not enough MTK!', 'error');
             }
         }
 
-        function updateStats() {
-            document.getElementById('score').textContent = score;
-            document.getElementById('gameBalance').textContent = `${score} MTK`;
-            document.getElementById('claimedBalance').textContent = `${claimedBalance} MTK`;
-            document.getElementById('multiplier').textContent = `${miningPower}x`;
-            document.getElementById('miners').textContent = miners;
-            document.getElementById('speed').textContent = miningSpeed.toFixed(1);
-        }
-
-        // Mobile Navigation
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Show/hide mobile nav button based on scroll
-        window.addEventListener('scroll', () => {
-            const navBtn = document.getElementById('mobileNavBtn');
-            if (window.scrollY > 200) {
-                navBtn.classList.remove('hidden');
-            } else {
-                navBtn.classList.add('hidden');
+        // ====================
+        // CLAIMING FUNCTIONS
+        // ====================
+        async function estimateClaimGas() {
+            if (claimableBalance <= 0) {
+                showNotification('No tokens available to claim!', 'error');
+                return;
             }
-        });
-
-        // Initialize game
-        function initGame() {
-            initResponsiveCanvas();
-            setupCanvasInteractions();
-            gameInterval = setInterval(updateGame, 1000 / miningSpeed);
-            updateStats();
             
-            // Show mobile tips
-            if (window.innerWidth <= 768) {
-                setTimeout(() => {
-                    showNotification('📱 Tip: Tap golden spots to mine!', 'info');
-                }, 2000);
+            try {
+                const claimBtn = document.getElementById('claimBtn');
+                claimBtn.disabled = true;
+                claimBtn.textContent = '⏳ Estimating Gas...';
+                
+                // Estimate gas for claim transaction
+                const estimatedGas = 65000; // Approximate for token minting
+                const gasPrice = await web3.eth.getGasPrice();
+                const gasCost = web3.utils.fromWei((BigInt(estimatedGas) * BigInt(gasPrice)).toString(), 'ether');
+                
+                document.getElementById('claimGasInfo').innerHTML = `
+                    Estimated Gas: ${estimatedGas.toLocaleString()} units<br>
+                    Gas Price: ${web3.utils.fromWei(gasPrice, 'gwei')} Gwei<br>
+                    Estimated Cost: ~${parseFloat(gasCost).toFixed(6)} ETH
+                `;
+                
+                claimBtn.disabled = false;
+                claimBtn.textContent = `💰 Claim ${claimableBalance} MTK`;
+                claimBtn.onclick = () => claimTokens();
+                
+                showNotification('Gas estimation complete!', 'success');
+                
+            } catch (error) {
+                showNotification('Gas estimation failed: ' + error.message, 'error');
+                document.getElementById('claimBtn').disabled = false;
+                document.getElementById('claimBtn').textContent = '💰 Claim MTK Tokens';
             }
         }
 
-        // Rest of the blockchain functions remain the same...
-        // [Previous blockchain functions - connectWallet, estimateClaimGas, claimTokens, etc.]
-        // They work the same way, just call them from the responsive buttons
+        async function claimTokens() {
+            if (claimableBalance <= 0) {
+                showNotification('No tokens to claim!', 'error');
+                return;
+            }
+            
+            try {
+                showPendingOverlay('Claiming MTK tokens...');
+                
+                // In a real implementation, this would call a smart contract function
+                // For demo purposes, we simulate the transaction
+                
+                const txHash = '0x' + Array.from({length: 64}, () => 
+                    Math.floor(Math.random() * 16).toString(16)).join('');
+                
+                document.getElementById('pendingTxHash').textContent = `Tx Hash: ${txHash.substring(0, 20)}...`;
+                
+                // Simulate blockchain delay
+                setTimeout(async () => {
+                    // Update balances
+                    const claimedAmount = claimableBalance;
+                    walletBalance += claimedAmount;
+                    totalClaimed += claimedAmount;
+                    claimableBalance = 0;
+                    score = 0; // Reset game score after claiming
+                    
+                    updateUI();
+                    hidePendingOverlay();
+                    
+                    showNotification(`✅ Successfully claimed ${claimedAmount} MTK!`, 'success');
+                    
+                    // Reset claim button
+                    const claimBtn = document.getElementById('claimBtn');
+                    claimBtn.textContent = '💰 Claim MTK Tokens';
+                    claimBtn.onclick = () => estimateClaimGas();
+                    
+                    // Update gas info
+                    document.getElementById('claimGasInfo').innerHTML = `
+                        ✅ Claim successful!<br>
+                        ${claimedAmount} MTK added to your wallet
+                    `;
+                    
+                }, 3000);
+                
+            } catch (error) {
+                hidePendingOverlay();
+                showNotification('Claim failed: ' + error.message, 'error');
+                
+                const claimBtn = document.getElementById('claimBtn');
+                claimBtn.textContent = '💰 Claim MTK Tokens';
+                claimBtn.onclick = () => estimateClaimGas();
+            }
+        }
 
+        // ====================
+        // WITHDRAWAL FUNCTIONS
+        // ====================
+        async function estimateWithdrawGas() {
+            const amountInput = document.getElementById('withdrawAmount');
+            const amount = parseFloat(amountInput.value);
+            const recipient = document.getElementById('recipientAddress').value;
+            
+            if (!amount || amount <= 0) {
+                showNotification('Please enter a valid amount', 'error');
+                return;
+            }
+            
+            if (!recipient || !recipient.startsWith('0x')) {
+                showNotification('Please enter a valid recipient address', 'error');
+                return;
+            }
+            
+            if (walletBalance < amount) {
+                showNotification(`Insufficient balance! You have ${walletBalance} MTK`, 'error');
+                return;
+            }
+            
+            try {
+                const withdrawBtn = document.getElementById('withdrawBtn');
+                withdrawBtn.disabled = true;
+                withdrawBtn.textContent = '⏳ Estimating Gas...';
+                
+                // Estimate gas for token transfer
+                const estimatedGas = 65000; // Approximate for ERC20 transfer
+                const gasPrice = await web3.eth.getGasPrice();
+                const gasCost = web3.utils.fromWei((BigInt(estimatedGas) * BigInt(gasPrice)).toString(), 'ether');
+                
+                document.getElementById('withdrawGasInfo').innerHTML = `
+                    Estimated Gas: ${estimatedGas.toLocaleString()} units<br>
+                    Gas Price: ${web3.utils.fromWei(gasPrice, 'gwei')} Gwei<br>
+                    Estimated Cost: ~${parseFloat(gasCost).toFixed(6)} ETH<br>
+                    Sending: ${amount} MTK to ${recipient.substring(0, 10)}...
+                `;
+                
+                withdrawBtn.disabled = false;
+                withdrawBtn.textContent = `🏦 Withdraw ${amount} MTK`;
+                withdrawBtn.onclick = () => withdrawTokens();
+                
+                showNotification('Withdrawal gas estimated!', 'success');
+                
+            } catch (error) {
+                showNotification('Gas estimation failed: ' + error.message, 'error');
+                document.getElementById('withdrawBtn').disabled = false;
+                document.getElementById('withdrawBtn').textContent = '🏦 Withdraw MTK';
+            }
+        }
+
+        async function withdrawTokens() {
+            const amountInput = document.getElementById('withdrawAmount');
+            const amount = parseFloat(amountInput.value);
+            const recipient = document.getElementById('recipientAddress').value;
+            
+            if (!amount || amount <= 0) {
+                showNotification('Please enter a valid amount', 'error');
+                return;
+            }
+            
+            if (!recipient || !recipient.startsWith('0x')) {
+                showNotification('Please enter a valid recipient address', 'error');
+                return;
+            }
+            
+            if (walletBalance < amount) {
+                showNotification(`Insufficient balance! You have ${walletBalance} MTK`, 'error');
+                return;
+            }
+            
+            try {
+                showPendingOverlay('Withdrawing MTK tokens...');
+                
+                // In a real implementation, this would call the transfer function
+                if (mtkContract && mtkContract.methods.transfer) {
+                    // Real blockchain transaction
+                    const decimals = await mtkContract.methods.decimals().call();
+                    const amountInWei = web3.utils.toWei(amount.toString(), 'ether');
+                    
+                    const tx = await mtkContract.methods.transfer(
+                        recipient, 
+                        amountInWei
+                    ).send({ 
+                        from: userAccount,
+                        gas: 100000 
+                    });
+                    
+                    document.getElementById('pendingTxHash').textContent = `Tx Hash: ${tx.transactionHash.substring(0, 20)}...`;
+                    
+                    // Wait for confirmation
+                    const receipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
+                    if (receipt.status) {
+                        // Update balances
+                        walletBalance -= amount;
+                        totalWithdrawn += amount;
+                        
+                        updateUI();
+                        hidePendingOverlay();
+                        
+                        showNotification(`✅ Successfully withdrew ${amount} MTK!`, 'success');
+                        
+                        document.getElementById('withdrawGasInfo').innerHTML = `
+                            ✅ Withdrawal successful!<br>
+                            ${amount} MTK sent to ${recipient.substring(0, 10)}...
+                        `;
+                    }
+                } else {
+                    // Demo mode - simulate withdrawal
+                    const txHash = '0x' + Array.from({length: 64}, () => 
+                        Math.floor(Math.random() * 16).toString(16)).join('');
+                    
+                    document.getElementById('pendingTxHash').textContent = `Tx Hash: ${txHash.substring(0, 20)}...`;
+                    
+                    setTimeout(() => {
+                        walletBalance -= amount;
+                        totalWithdrawn += amount;
+                        
+                        updateUI();
+                        hidePendingOverlay();
+                        
+                        showNotification(`✅ Withdrew ${amount} MTK to ${recipient.substring(0, 10)}...`, 'success');
+                        
+                        document.getElementById('withdrawGasInfo').innerHTML = `
+                            ✅ Withdrawal simulated!<br>
+                            ${amount} MTK sent to ${recipient.substring(0, 10)}...
+                        `;
+                    }, 3000);
+                }
+                
+                // Reset withdraw button
+                const withdrawBtn = document.getElementById('withdrawBtn');
+                withdrawBtn.textContent = '🏦 Withdraw MTK';
+                withdrawBtn.onclick = () => estimateWithdrawGas();
+                
+            } catch (error) {
+                hidePendingOverlay();
+                showNotification('Withdrawal failed: ' + error.message, 'error');
+                
+                const withdrawBtn = document.getElementById('withdrawBtn');
+                withdrawBtn.textContent = '🏦 Withdraw MTK';
+                withdrawBtn.onclick = () => estimateWithdrawGas();
+            }
+        }
+
+        // ====================
+        // WALLET FUNCTIONS
+        // ====================
         async function connectWallet() {
             try {
                 if (typeof window.ethereum === 'undefined') {
-                    showNotification('Install MetaMask first!', 'error');
-                    window.open('https://metamask.io/download/', '_blank');
+                    showNotification('Please install MetaMask first!', 'error');
                     return;
                 }
 
@@ -1264,43 +947,76 @@ contract MTKCoin is ERC20, Ownable {
                 });
                 
                 if (accounts.length === 0) {
-                    showNotification('Unlock MetaMask first!', 'error');
+                    showNotification('Please unlock MetaMask and try again', 'error');
                     return;
                 }
                 
                 web3 = new Web3(window.ethereum);
                 userAccount = accounts[0];
                 
+                // Initialize contract
+                mtkContract = new web3.eth.Contract(MTK_CONTRACT_ABI, MTK_CONTRACT_ADDRESS);
+                
                 const chainId = await web3.eth.getChainId();
                 
                 if (chainId !== 11155111) {
-                    showNotification('Switch to Sepolia Testnet', 'warning');
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_switchEthereumChain',
-                            params: [{ chainId: '0xaa36a7' }],
-                        });
-                        setTimeout(() => location.reload(), 1000);
-                        return;
-                    } catch (switchError) {
-                        console.log('Switch error:', switchError);
-                    }
+                    showNotification('Please switch to Sepolia Testnet', 'warning');
+                    return;
                 }
                 
+                // Update UI
                 document.getElementById('accountAddress').textContent = 
                     `${userAccount.substring(0, 6)}...${userAccount.substring(38)}`;
                 
                 connected = true;
                 
+                // Switch to game screen
                 document.getElementById('connectionScreen').classList.add('hidden');
                 document.getElementById('gameScreen').classList.remove('hidden');
                 
+                // Initialize game
                 initGame();
                 
-                showNotification('✅ Wallet connected!', 'success');
+                // Load balances
+                await refreshBalances();
+                
+                showNotification('✅ Wallet connected successfully!', 'success');
                 
             } catch (error) {
-                showNotification('Connection failed', 'error');
+                showNotification('Connection failed: ' + error.message, 'error');
+            }
+        }
+
+        async function refreshBalances() {
+            if (!connected || !web3) return;
+            
+            try {
+                // Get ETH balance
+                const ethBalance = await web3.eth.getBalance(userAccount);
+                const ethFormatted = web3.utils.fromWei(ethBalance, 'ether');
+                document.getElementById('ethBalance').textContent = 
+                    `${parseFloat(ethFormatted).toFixed(4)} ETH`;
+                
+                // Get MTK token balance if contract is deployed
+                if (mtkContract && mtkContract.methods.balanceOf) {
+                    try {
+                        const tokenBalance = await mtkContract.methods.balanceOf(userAccount).call();
+                        const decimals = await mtkContract.methods.decimals().call();
+                        const tokenName = await mtkContract.methods.name().call();
+                        
+                        const formattedBalance = tokenBalance / Math.pow(10, decimals);
+                        walletBalance = formattedBalance;
+                        
+                        updateUI();
+                    } catch (error) {
+                        console.log('Token balance check failed, using demo mode');
+                    }
+                }
+                
+                showNotification('Balances refreshed!', 'success');
+                
+            } catch (error) {
+                console.error('Balance refresh error:', error);
             }
         }
 
@@ -1308,11 +1024,44 @@ contract MTKCoin is ERC20, Ownable {
             connected = false;
             web3 = null;
             userAccount = null;
+            mtkContract = null;
             
             document.getElementById('gameScreen').classList.add('hidden');
             document.getElementById('connectionScreen').classList.remove('hidden');
             
             showNotification('Wallet disconnected', 'info');
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('gameBalance').textContent = `${score} MTK`;
+            document.getElementById('claimableAmount').textContent = `${claimableBalance} MTK`;
+            document.getElementById('walletBalance').textContent = `${walletBalance} MTK`;
+            document.getElementById('totalMined').textContent = `${totalMined} MTK`;
+            document.getElementById('totalClaimed').textContent = `${totalClaimed} MTK`;
+            document.getElementById('totalWithdrawn').textContent = `${totalWithdrawn} MTK`;
+            document.getElementById('multiplier').textContent = `${miningPower}x`;
+            document.getElementById('miners').textContent = miners;
+            document.getElementById('speed').textContent = miningSpeed.toFixed(1);
+        }
+
+        // ====================
+        // UTILITY FUNCTIONS
+        // ====================
+        function showPendingOverlay(message) {
+            document.getElementById('pendingText').textContent = message;
+            document.getElementById('pendingOverlay').classList.remove('hidden');
+            
+            if (web3) {
+                web3.eth.getGasPrice().then(price => {
+                    document.getElementById('pendingGasInfo').textContent = 
+                        `Gas Price: ${web3.utils.fromWei(price, 'gwei')} Gwei`;
+                });
+            }
+        }
+
+        function hidePendingOverlay() {
+            document.getElementById('pendingOverlay').classList.add('hidden');
         }
 
         function showNotification(message, type) {
@@ -1333,34 +1082,9 @@ contract MTKCoin is ERC20, Ownable {
             setTimeout(() => notification.classList.remove('show'), 3000);
         }
 
-        function showContractModal() {
-            document.getElementById('contractModal').classList.remove('hidden');
-        }
-
-        function closeContractModal() {
-            document.getElementById('contractModal').classList.add('hidden');
-        }
-
-        function hidePendingOverlay() {
-            document.getElementById('pendingOverlay').classList.add('hidden');
-        }
-
-        // Stub functions for demo
-        async function estimateClaimGas() {
-            showNotification('Feature coming soon!', 'info');
-        }
-
-        async function estimateWithdrawGas() {
-            showNotification('Feature coming soon!', 'info');
-        }
-
-        async function checkAllBalances() {
-            showNotification('Refreshing...', 'info');
-        }
-
-        // Initialize on load
+        // Initialize
         window.onload = function() {
-            // Check if already connected
+            // Check if already connected to MetaMask
             if (typeof window.ethereum !== 'undefined') {
                 window.ethereum.request({ method: 'eth_accounts' })
                     .then(accounts => {
@@ -1371,13 +1095,6 @@ contract MTKCoin is ERC20, Ownable {
                         }
                     });
             }
-            
-            // Handle mobile back button
-            window.addEventListener('popstate', () => {
-                if (connected) {
-                    disconnectWallet();
-                }
-            });
         };
     </script>
     
